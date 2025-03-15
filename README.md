@@ -52,7 +52,7 @@ A modern job application form with robust state management and elegant UI, built
 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/job-application-form.git
+git clone https://github.com/i-mml/fanap-interview.git
 npm install
 npm run dev
 ```
