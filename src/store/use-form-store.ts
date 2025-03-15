@@ -12,6 +12,7 @@ type FormState = {
   };
   errors: Record<string, string>;
   submitted: boolean;
+  isSubmitting: boolean;
   setField: (field: string, value: string | string[]) => void;
   validate: () => boolean;
   submit: () => void;
@@ -33,6 +34,7 @@ export const useFormStore = create<FormState>()(
       data: { ...initialState },
       errors: {},
       submitted: false,
+      isSubmitting: false,
       setField: (field, value) =>
         set((state) => ({
           data: { ...state.data, [field]: value },
@@ -58,7 +60,15 @@ export const useFormStore = create<FormState>()(
         set({ errors });
         return Object.keys(errors).length === 0;
       },
-      submit: () => set({ submitted: true }),
+      submit: async () => {
+        set({ isSubmitting: true });
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          set({ submitted: true });
+        } finally {
+          set({ isSubmitting: false });
+        }
+      },
       reset: () =>
         set({ data: { ...initialState }, errors: {}, submitted: false }),
     }),
