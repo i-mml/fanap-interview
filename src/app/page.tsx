@@ -1,103 +1,173 @@
-import Image from "next/image";
+"use client";
+
+import ThemeSwitcher from "@/components/ThemeSwitcher";
+import { JOB_ROLES, SKILLS } from "@/constants/input-mocks-data";
+import { useFormStore } from "@/store/use-form-store";
+import clsx from "clsx";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { data, errors, submitted, setField, validate, submit, reset } =
+    useFormStore();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate()) submit();
+  };
+
+  return (
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Job Application
+          </h1>
+          <ThemeSwitcher />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="input-label">Full Name *</label>
+              <input
+                type="text"
+                value={data.fullName}
+                onChange={(e) => setField("fullName", e.target.value)}
+                className={clsx(
+                  "input-base-style",
+                  errors.fullName ? "border-red-500" : "border-gray-300"
+                )}
+              />
+              {errors.fullName && (
+                <p className="input-error-message">{errors.fullName}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="input-label">Email *</label>
+              <input
+                type="email"
+                value={data.email}
+                onChange={(e) => setField("email", e.target.value)}
+                className={clsx(
+                  "input-base-style",
+                  errors.email ? "border-red-500" : "border-gray-300"
+                )}
+              />
+              {errors.email && (
+                <p className="input-error-message">{errors.email}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="input-label">Job Role *</label>
+              <select
+                value={data.jobRole}
+                onChange={(e) => setField("jobRole", e.target.value)}
+                className={clsx(
+                  "input-base-style",
+                  errors.jobRole ? "border-red-500" : "border-gray-300"
+                )}
+              >
+                <option value="">Select a role</option>
+                {JOB_ROLES.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+              {errors.jobRole && (
+                <p className="input-error-message">{errors.jobRole}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="input-label">Years of Experience *</label>
+              <input
+                type="number"
+                min="0"
+                value={data.yearsOfExperience}
+                onChange={(e) => setField("yearsOfExperience", e.target.value)}
+                className={clsx(
+                  "input-base-style",
+                  errors.yearsOfExperience
+                    ? "border-red-500"
+                    : "border-gray-300"
+                )}
+              />
+              {errors.yearsOfExperience && (
+                <p className="input-error-message">
+                  {errors.yearsOfExperience}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="input-label">Skills</label>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              {SKILLS.map((skill) => (
+                <label key={skill} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={data.skills.includes(skill)}
+                    onChange={(e) => {
+                      const newSkills = e.target.checked
+                        ? [...data.skills, skill]
+                        : data.skills.filter((s) => s !== skill);
+                      setField("skills", newSkills);
+                    }}
+                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
+                  />
+                  <span className="text-gray-700 dark:text-gray-300">
+                    {skill}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="input-label">Cover Letter *</label>
+            <textarea
+              value={data.coverLetter}
+              onChange={(e) => setField("coverLetter", e.target.value)}
+              className={`input-base-style ${
+                errors.coverLetter ? "border-red-500" : "border-gray-300"
+              }  h-32`}
+            />
+            {errors.coverLetter && (
+              <p className="input-error-message">{errors.coverLetter}</p>
+            )}
+          </div>
+
+          <div className="flex gap-4">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              onClick={reset}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+            >
+              Reset
+            </button>
+          </div>
+        </form>
+
+        {submitted && (
+          <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 dark:text-white">
+              Submitted Data
+            </h2>
+            <pre className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+              {JSON.stringify(data, null, 2)}
+            </pre>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
