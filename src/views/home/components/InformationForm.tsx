@@ -121,9 +121,10 @@ const InformationForm = () => {
           disabled={isSubmitting}
           value={data.coverLetter}
           onChange={(e) => setField("coverLetter", e.target.value)}
-          className={`input-base-style ${
+          className={clsx(
+            "input-base-style h-32",
             errors.coverLetter ? "border-red-500" : "border-gray-300"
-          }  h-32`}
+          )}
         />
         {errors.coverLetter && (
           <p className="input-error-message">{errors.coverLetter}</p>
